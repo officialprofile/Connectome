@@ -1,0 +1,42 @@
+---
+title: "C. elegans connectome visualization"
+output: 
+  flexdashboard::flex_dashboard:
+    theme: 
+      version: 4
+      bootswatch: lux
+    orientation: rows
+---
+
+```{r setup, include = FALSE}
+library(flexdashboard)
+library(igraph)
+library(networkD3)
+library(readxl)
+
+k <- readxl::read_xls("konektom.xls", sheet = "Connectome")
+colnames(k) <- c('from', 'to', 'weight')
+
+p <- simpleNetwork(k,
+                   height = NULL,
+                   width = NULL, 
+                   Source = 1,
+                   Target = 2,
+                   linkDistance = 20,
+                   charge = -100,
+                   fontSize = 15,
+                   fontFamily = "sans-serif",
+                   linkColour = "#8d99ae",
+                   nodeColour = "#2b2d42",
+                   opacity = 0.5,
+                   zoom = T
+)
+```
+
+
+```{r}
+p
+```
+
+
+
