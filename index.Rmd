@@ -13,7 +13,7 @@ library(flexdashboard)
 library(igraph)
 library(networkD3)
 library(readxl)
-
+library(dplyr)
 k <- readxl::read_xls("konektom.xls", sheet = "Connectome")
 colnames(k) <- c('from', 'to', 'weight')
 
@@ -39,4 +39,43 @@ p
 ```
 
 
+
+```{r include = FALSE}
+src <- k$from
+target <- k$to
+networkData <- data.frame(src, target, stringsAsFactors = FALSE)
+
+nodes <- data.frame(name = unique(c(src, target)), stringsAsFactors = FALSE)
+nodes$id <- 0:(nrow(nodes) - 1)
+
+edges <- networkData %>%
+   left_join(nodes, by = c("src" = "name")) %>%
+   select(-src) %>%
+   rename(source = id) %>%
+   left_join(nodes, by = c("target" = "name")) %>%
+   select(-target) %>%
+   rename(target = id)
+
+edges$width <- sample(c(1,2,5, 10), 3954, replace = T)
+ 
+nodes$group <- ifelse(nodes$name %in% src, "lions", "tigers")
+nodes$size <- sample(c(1,6,5,17), 397, replace = T)
+
+forceNetwork(Links = edges, Nodes = nodes, 
+             Source = "source",
+             Target = "target",
+             NodeID ="name",
+             Nodesize = 'size',
+             Group = "group",
+             Value = "width",
+             opacity = 0.9,
+             zoom = TRUE)
+```
+
+
+
+```{r include = FALSE}
+a <- readxl::read_xls("NeuronConnect.xls")
+b <- readxl::read_xls("NeuronType.xls")
+```
 
