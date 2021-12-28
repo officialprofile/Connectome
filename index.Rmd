@@ -1,16 +1,16 @@
 ---
-title: "C. elegans connectome visualization"
+title: "C. elegans visualizer"
 output: 
   flexdashboard::flex_dashboard:
-    theme: 
-      version: 4
-      bootswatch: lux
-    orientation: rows
+    orientation: row
+    vertical_layout: fill
 ---
+
 
 ```{r setup, include = FALSE}
 library(flexdashboard)
 library(igraph)
+library(threejs)
 library(networkD3)
 library(readxl)
 library(dplyr)
@@ -31,14 +31,20 @@ p <- simpleNetwork(k,
                    opacity = 0.5,
                    zoom = T
 )
+network <- graph_from_edgelist(as.matrix(k[,1:2]), dir = T)
 ```
-
 
 ```{r}
-p
+graphjs(network,
+        bg = 'white',
+        vertex.size = 0.5,
+        vertex.shape = "circle",
+        vertex.color = "#000000",
+        vertex.label = k$from,
+        edge.width = 1.5,
+        edge.color = "#00bbf9",
+        edge.alpha = 0.1)
 ```
-
-
 
 ```{r include = FALSE}
 src <- k$from
