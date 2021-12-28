@@ -32,17 +32,21 @@ p <- simpleNetwork(k,
                    zoom = T
 )
 network <- graph_from_edgelist(as.matrix(k[,1:2]), dir = T)
+
+vert_names <- c(k$from, k$to) %>% unique() 
+colors <- colorspace::heat_hcl(length(vert_names))
+names(colors) = vert_names
 ```
 
 ```{r}
 graphjs(network,
         bg = 'white',
-        vertex.size = 0.5,
+        vertex.size = sqrt(k$weight)/5,
         vertex.shape = "circle",
-        vertex.color = "#000000",
+        vertex.color = as.vector(colors[vert_names]),
         vertex.label = k$from,
-        edge.width = 1.5,
-        edge.color = "#00bbf9",
+        edge.width = 1,
+        edge.color = "#000000",
         edge.alpha = 0.1)
 ```
 
@@ -77,8 +81,6 @@ forceNetwork(Links = edges, Nodes = nodes,
              opacity = 0.9,
              zoom = TRUE)
 ```
-
-
 
 ```{r include = FALSE}
 a <- readxl::read_xls("NeuronConnect.xls")
