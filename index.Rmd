@@ -8,10 +8,12 @@ output:
 
 
 ```{r setup, include = FALSE}
+library(bslib)
 library(flexdashboard)
 library(igraph)
 library(threejs)
 library(networkD3)
+library(colorspace)
 library(readxl)
 library(dplyr)
 k <- readxl::read_xls("konektom.xls", sheet = "Connectome")
@@ -32,21 +34,22 @@ p <- simpleNetwork(k,
                    zoom = T
 )
 network <- graph_from_edgelist(as.matrix(k[,1:2]), dir = T)
+```
 
+```{r}
 vert_names <- c(k$from, k$to) %>% unique() 
-colors <- colorspace::heat_hcl(length(vert_names))
+colors <- topo.colors(length(vert_names))
 names(colors) = vert_names
 ```
 
 ```{r}
 graphjs(network,
-        bg = 'white',
+        bg = 'black',
         vertex.size = sqrt(k$weight)/5,
         vertex.shape = "circle",
         vertex.color = as.vector(colors[vert_names]),
         vertex.label = k$from,
-        edge.width = 1,
-        edge.color = "#000000",
+        edge.width = 2,
         edge.alpha = 0.1)
 ```
 
